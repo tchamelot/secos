@@ -86,7 +86,7 @@ void tp()
 	// Fourth entry data, 32 bits, RW, base 0x600000, limite 32o
 	set_desc(&(gdt_entries[3]), 0x600000, 0x20, 
 				SEG_DESC_DATA_RW,
-				0, 1, 1);
+				0, 1, 0);
 
 	set_gdtr(gdt);
 	set_es(0x10);
@@ -96,10 +96,9 @@ void tp()
 	set_fs(0x10);
 	set_cs(0x08);
 
-
 	memset(src, 'a', 64);
 
 	set_es(0x18);
 
-	_memcpy8(dst, src, 64);
+	_memcpy8(dst, src, 32);
 }
