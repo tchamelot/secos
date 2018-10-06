@@ -69,7 +69,7 @@ void tp()
 	get_gdtr(*gdt_ptr);
 	print_gdt(gdt_ptr);	
 	
-	gdt.limit = 4 * sizeof(seg_desc_t);
+	gdt.limit = 4 * sizeof(seg_desc_t) - 1;
 	gdt.desc = gdt_entries;
 
 	// First entry is NULL
