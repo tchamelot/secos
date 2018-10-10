@@ -7,22 +7,15 @@ extern info_t *info;
 
 void bp_handler()
 {
-	// Remove stack handling from C fucntion
-	asm volatile ("mov %ebp, %esp");
-	asm volatile ("pop %ebp");
-
 	// Replace Trampoline (I don't know if it is usefull)
-	asm volatile ("pushl $-1");
-	asm volatile ("pushl $3");
 	asm volatile ("pusha");
-	asm volatile ("mov %esp, %eax");
 
 	// Core of handler
 	debug("Breakpoint handler\n");
 
 	// Return from interruption
 	asm volatile ("popa");
-	asm volatile ("add $8, %esp");
+	asm volatile ("leave");
 	asm volatile ("iret");
 }
 
