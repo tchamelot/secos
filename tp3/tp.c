@@ -3,6 +3,8 @@
 #include <segmem.h>
 #include <string.h>
 #include <info.h>
+#include <asm.h>
+#include <intr.h>
 
 extern info_t *info;
 
@@ -93,23 +95,49 @@ void init_gdt()
    set_gs(d0_sel);
 }
 
+void syscall()
+{
+	asm volatile ("pusha");
+
+	debug("Back to kernel\n");
+
+	asm volatile ("popa");
+	asm volatile ("leave");
+	asm volatile ("iret");
+}
+
+void init_syscall()
+{
+	idt_reg_t idt;
+	get_idtr(idt);
+	idt.desc[128].offset_1 = (unsigned int)syscall & 0xffff;
+	idt.desc[128].offset_2 = ((unsigned int)syscall >> 16) & 0xffff;
+	idt.desc[128].dpl = 3;
+	idt.desc[128].selector = c0_sel;
+}
+
 void userland()
 {
+	int i;
 	debug("Userland\n");
-	while(1);
-	//asm volatile ("mov %eax, %cr0");
+	for(i = 0; i < 10; i++)
+		debug("\t%d\n", i);
+
+	asm volatile ("int $0x80");
 }
 
 void tp()
 {
    init_gdt();
+   init_syscall();
+   force_interrupts_on();
    debug("Getting in userland\n");
    
    TSS.s0.esp = get_ebp();
    TSS.s0.ss = d0_sel; 
    tss_dsc( &GDT[tss_idx], (offset_t)&TSS );
    set_tr(ts_sel);
-   
+
    asm volatile ("push %0    \n" // ss
 		 "push %%ebp \n" // esp
 		 "pushf      \n" // eflags
