@@ -16,6 +16,7 @@ void init_segmem(void)
 	d0_dsc(&GDT[2]);	// Third entry data r0
 	c3_dsc(&GDT[3]);	// Fourth entry code r3
 	d3_dsc(&GDT[4]);	// Fifth entry data r3
+	tss_dsc(&GDT[5], (offset_t)&TSS1);
 
 	gdtr.desc = GDT;
 	gdtr.limit = sizeof(GDT) - 1;

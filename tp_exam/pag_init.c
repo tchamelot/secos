@@ -18,6 +18,8 @@ void init_paging(void)
 	pde32_t *pgd2 = (pde32_t*)0x004050000;
 	pte32_t *ptb2 = (pte32_t*)0x00406000;
 
+	debug("[+] paging\n");
+
 	// Kernel paging
 	for(i = 0; i < 1024; i++)
 		pg_set_entry(&ptb_kernel[i], PG_KRN|PG_RW, i);

@@ -1,3 +1,5 @@
+#ifndef _SEG_INIT_H_
+#define _SEG_INIT_H_
 #include <segmem.h>
 
 #define c0_idx 1
@@ -46,7 +48,7 @@
 	(_dSc_)->raw 		= sizeof(tss_t);		\
 	(_dSc_)->base_1		= addr.wlow;			\
 	(_dSc_)->base_2		= addr._whigh.blow;		\
-	(_dSc_)->base_3		= addr._whigh.bhing;		\
+	(_dSc_)->base_3		= addr._whigh.bhigh;		\
 	(_dSc_)->type		= SEG_DESC_SYS_TSS_AVL_32;	\
 	(_dSc_)->p		= 0x1;				\
 })
@@ -57,3 +59,5 @@
 #define d3_dsc(_d) gdt_usr_desc(_d, SEG_DESC_DATA_RW)
 
 void init_segmem(void);
+
+#endif

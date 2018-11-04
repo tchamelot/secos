@@ -1,3 +1,6 @@
+#ifndef _PAG_INIT_H_
+#define _PAG_INIT_H_
+
 #include <pagemem.h>
 #include <cr.h>
 
@@ -15,3 +18,5 @@
 
 #define BASE_SHARE_MEM		0x01000000
 void init_paging(void);
+
+#endif
