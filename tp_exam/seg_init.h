@@ -6,15 +6,13 @@
 #define d0_idx 2
 #define c3_idx 3
 #define d3_idx 4
-#define ts1_idx 5
-#define ts2_idx 6
+#define tss_idx 5
 
 #define c0_sel gdt_krn_seg_sel(c0_idx)
 #define d0_sel gdt_krn_seg_sel(d0_idx)
 #define c3_sel gdt_usr_seg_sel(c3_idx)
 #define d3_sel gdt_usr_seg_sel(d3_idx)
-#define ts1_sel gdt_krn_seg_sel(ts1_idx)
-#define ts2_sel gdt_krn_seg_sel(ts2_idx)
+#define tss_sel gdt_krn_seg_sel(tss_idx)
 
 #define gdt_krn_desc(_dSc_, _tYp_)		\
 ({						\

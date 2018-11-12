@@ -4,9 +4,8 @@
 
 //TODO select specific value for gdt et gdtr
 
-seg_desc_t GDT[7];
-tss_t TSS1;
-tss_t TSS2;
+seg_desc_t GDT[6];
+tss_t TSS;
 
 void init_segmem(void)
 {
@@ -16,8 +15,9 @@ void init_segmem(void)
 	d0_dsc(&GDT[2]);	// Third entry data r0
 	c3_dsc(&GDT[3]);	// Fourth entry code r3
 	d3_dsc(&GDT[4]);	// Fifth entry data r3
-	tss_dsc(&GDT[5], (offset_t)&TSS1);
-	tss_dsc(&GDT[6], (offset_t)&TSS2);
+	tss_dsc(&GDT[5], (offset_t)&TSS);
+
+	TSS.s0.ss = d0_sel;
 
 	gdtr.desc = GDT;
 	gdtr.limit = sizeof(GDT) - 1;
@@ -31,4 +31,6 @@ void init_segmem(void)
 	set_es(d0_sel);
 	set_fs(d0_sel);
 	set_gs(d0_sel);
+
+	set_tr(tss_sel);
 }

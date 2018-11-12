@@ -7,6 +7,7 @@
 #include "task.h"
 
 extern task_t tasks[2];
+extern tss_t TSS;
 static task_t* current_task = tasks;
 
 void init_scheduler()
@@ -25,7 +26,7 @@ void scheduler_irq()
 {
 	int_ctx_t* ctx;
 
-	// Je préfaire le jijutsu ^^
+	// Je préfaire le jujitsu ^^
 	asm volatile("leave");
 	
 	// Prepare access to int_ctx_t
@@ -46,7 +47,7 @@ void scheduler_irq()
 	{
 		current_task->kstack = get_esp();
 		
-		current_task->next_task->ts->s0.esp = current_task->next_task->kstack + 60;
+		TSS.s0.esp = current_task->next_task->kstack + 60;
 		set_esp(current_task->next_task->kstack);
 		current_task = current_task->next_task;
 	}
@@ -59,17 +60,10 @@ void scheduler_irq()
 
 void force_scheduling()
 {
-	current_task->next_task->state |= TASK_RUNNING | TASK_INIT;
-	current_task->next_task->ts->s0.esp = current_task->next_task->kstack;
-	set_tr(current_task->next_task->ts_sel);
+	TSS.s0.esp = current_task->next_task->kstack;
 	set_esp(current_task->next_task->kstack);
 	current_task = current_task->next_task;
 	asm volatile("popa");
 	asm volatile("add $8, %esp");
 	asm volatile("iret");
-}
-
-void __regparm__(1) scheduler_handler(int_ctx_t* ctx)
-{
-	debug("cs : %x\n", ctx->cs.raw);
 }
