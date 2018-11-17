@@ -5,8 +5,6 @@
 #include <intr.h>
 
 
-void init_scheduler();
-void scheduler_irq();
-void force_scheduling();
+void scheduler_hdl(int_ctx_t* ctx);
 
 #endif

@@ -26,15 +26,19 @@ CFLAGS     := $(CFLG_WRN) $(CFLG_FP) $(CFLG_KRN) $(CFLG_32) $(CFLG_REL)
 INCLUDE    := -I../kernel/include
 CORE       := ../kernel/core/
 
-core_obj   :=	entry.o \
-		start.o \
-		print.o \
-		uart.o	\
-		pic.o 	\
-		intr.o	\
-		idt.o	\
-		excp.o	\
-		stack.o
+core_obj   :=	entry.o 	\
+		start.o 	\
+		print.o 	\
+		uart.o		\
+		pic.o 		\
+		intr.o		\
+		idt.o		\
+		excp.o		\
+		stack.o 	\
+		task.o		\
+		scheduler.o	\
+		syscall.o	\
+		seg_init.o
 
 objects    := $(addprefix $(CORE), $(core_obj))
 

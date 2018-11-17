@@ -2,6 +2,8 @@
 #include <intr.h>
 #include <debug.h>
 #include <info.h>
+#include <scheduler.h>
+#include <syscall.h>
 
 extern info_t *info;
 extern void idt_trampoline();
@@ -17,7 +19,9 @@ void intr_init()
 
    /* re-use default grub GDT code descriptor */
    for(i=0 ; i<IDT_NR_DESC ; i++, isr += IDT_ISR_ALGN)
-      int_desc(&IDT[i], gdt_krn_seg_sel(1), isr);
+	   int_desc(&IDT[i], gdt_krn_seg_sel(1), isr);
+   
+   IDT[0x80].dpl = 3;
 
    idtr.desc  = IDT;
    idtr.limit = sizeof(IDT) - 1;
@@ -26,38 +30,20 @@ void intr_init()
 
 void __regparm__(1) intr_hdlr(int_ctx_t *ctx)
 {
-   debug("\nIDT event\n"
-         " . int    #%d\n"
-         " . error  0x%x\n"
-         " . cs:eip 0x%x:0x%x\n"
-         " . ss:esp 0x%x:0x%x\n"
-         " . eflags 0x%x\n"
-         "\n- GPR\n"
-         "eax     : 0x%x\n"
-         "ecx     : 0x%x\n"
-         "edx     : 0x%x\n"
-         "ebx     : 0x%x\n"
-         "esp     : 0x%x\n"
-         "ebp     : 0x%x\n"
-         "esi     : 0x%x\n"
-         "edi     : 0x%x\n"
-         ,ctx->nr.raw, ctx->err.raw
-         ,ctx->cs.raw, ctx->eip.raw
-         ,ctx->ss.raw, ctx->esp.raw
-         ,ctx->eflags.raw
-         ,ctx->gpr.eax.raw
-         ,ctx->gpr.ecx.raw
-         ,ctx->gpr.edx.raw
-         ,ctx->gpr.ebx.raw
-         ,ctx->gpr.esp.raw
-         ,ctx->gpr.ebp.raw
-         ,ctx->gpr.esi.raw
-         ,ctx->gpr.edi.raw);
+	uint8_t vector = ctx->nr.blow;
 
-   uint8_t vector = ctx->nr.blow;
-
-   if(vector < NR_EXCP)
-      excp_hdlr(ctx);
-   else
-      debug("ignore IRQ %d\n", vector);
+	switch(vector)
+	{
+		case 32:
+			scheduler_hdl(ctx);
+			break;
+		case 128:
+			syscall_hdl(ctx);
+			break;
+		default:
+			if(vector < NR_EXCP)
+      				excp_hdlr(ctx);
+   			else
+      				debug("ignore IRQ %d\n", vector);
+   }
 }

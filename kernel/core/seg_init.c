@@ -1,6 +1,6 @@
 #include <debug.h>
 #include <segmem.h>
-#include "seg_init.h"
+#include <seg_init.h>
 
 //TODO select specific value for gdt et gdtr
 
