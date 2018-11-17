@@ -19,11 +19,7 @@ void __counter__ counter_task()
 	*counter = 0;
 	while(1)
 	{
-		if(state == 0)
-		{
-			state = 1;
-			(*counter)++;
-		}
+		(*counter)++;
 	}
 }
 
@@ -31,11 +27,7 @@ void __printer__ printer_task()
 {
 	while(1)
 	{
-		if(state == 1)
-		{
-			print_counter(counter);
-			state = 0;
-		}
+		print_counter(counter);
 	}
 }
 

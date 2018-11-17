@@ -26,7 +26,7 @@ void init_task(task_t* task, uint32_t code,
 
 void save_task(task_t* task, int_ctx_t* ctx)
 {
-	task->kstack = (uint32_t)(ctx - sizeof(ctx));
+	task->kstack = (uint32_t)(ctx) + 60;// - sizeof(ctx));
 	memcpy(&task->ctx, ctx, sizeof(int_ctx_t));	
 }
 
