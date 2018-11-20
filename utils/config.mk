@@ -39,7 +39,8 @@ core_obj   :=	entry.o 	\
 		task.o		\
 		scheduler.o	\
 		syscall.o	\
-		seg_init.o
+		seg_init.o	\
+		pag_init.o
 
 objects    := $(addprefix $(CORE), $(core_obj))
 

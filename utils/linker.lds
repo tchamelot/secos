@@ -32,9 +32,13 @@ SECTIONS
 
    . = 0x800000;
    . = 0x802000;
+   __counter_start__ = .;
    .countercode    : { KEEP(*(.countercode))	 } : phcountercode
+   __counter_end__ = .;
 
    . = 0xc00000;
    . = 0xc02000;
+   __printer_start__ = .;
    .printercode	: { KEEP(*(.printercode))	 } : phprintercode
+   __printer_end__ = .;
 }
