@@ -17,6 +17,6 @@ void scheduler_hdl(int_ctx_t* ctx)
 	{
 		save_task(current_task, ctx);
 		current_task = current_task->next_task;
-		restore_task(current_task);
+		switch_task(current_task);
 	}
 }

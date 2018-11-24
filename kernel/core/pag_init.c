@@ -22,6 +22,17 @@ uint32_t new_page()
 	return current_page;
 }
 
+void enable_paging()
+{
+	uint32_t cr0 = get_cr0();
+	set_cr0(cr0|CR0_PG);
+}
+
+uint8_t is_paging_enable()
+{
+	return ((get_cr0() & CR0_PG) == CR0_PG);
+}
+
 void map_address(pde32_t* pde, uint32_t begin, uint32_t end, uint8_t opt)
 {
 	uint32_t pde_end_idx = pd32_idx(end);
@@ -50,10 +61,12 @@ void map_address(pde32_t* pde, uint32_t begin, uint32_t end, uint8_t opt)
 
 void init_page_task(task_t* task, uint32_t task_start, uint32_t task_end)
 {
+
+	debug("d:%x, d:%x\n", task_start, task_end);
 	pde32_t* pde = (pde32_t*)new_page();
 
 	// Map kernel
-	map_address(pde, (uint32_t)&__kernel_start__, (uint32_t)&__kernel_end__, PG_KRN|PG_RW);
+	map_address(pde, (uint32_t)&__kernel_start__-0x2000, (uint32_t)&__kernel_end__, PG_KRN|PG_RW);
 
 	// Map page
 	map_address(pde, BASE_PAGE_ADDR, LAST_PAGE_ADDR, PG_KRN|PG_RW);
@@ -66,6 +79,9 @@ void init_page_task(task_t* task, uint32_t task_start, uint32_t task_end)
 
 	// Map task stack
 	map_address(pde, task_start - 0x2000, task_start - 0x1000, PG_USR|PG_RW);
+
+	// Map shared memory
+	map_address(pde, 0xd00000, 0xd00000 + 0x1000, PG_USR|PG_RW);
 
 	task->cr3 = (uint32_t)pde;
 }

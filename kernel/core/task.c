@@ -4,6 +4,7 @@
 #include <gpr.h>
 #include <task.h>
 #include <seg_init.h>
+#include <pag_init.h>
 
 extern tss_t TSS;
 
@@ -26,13 +27,14 @@ void init_task(task_t* task, uint32_t code,
 
 void save_task(task_t* task, int_ctx_t* ctx)
 {
-	task->kstack = (uint32_t)(ctx) + 60;// - sizeof(ctx));
+	task->kstack = (uint32_t)(ctx) + 60;
 	memcpy(&task->ctx, ctx, sizeof(int_ctx_t));	
 }
 
-void restore_task(task_t* task)
+void __regparm__(1) restore_task(task_t* task)
 {
 	TSS.s0.esp = task->kstack;
+	//set_cr3(task->cr3);
 	set_esp(task->kstack);
 	asm volatile(
 		"push %0 \n" // ss
@@ -48,6 +50,8 @@ void restore_task(task_t* task)
 		"push %10\n" // ebp
 		"push %11\n" // esi
 		"push %12\n" // edi
+		//"mov %%eax, %13	\n"
+		//"mov %%cr3, %%eax\n"
 		"popa	 \n" // restore registers
 		"iret    \n"
 		::
@@ -64,5 +68,6 @@ void restore_task(task_t* task)
 		"g"(task->ctx.gpr.ebp.raw),
 		"g"(task->ctx.gpr.esi.raw),
 		"g"(task->ctx.gpr.edi.raw)
+		//"g"(task->cr3)
 	);
 }

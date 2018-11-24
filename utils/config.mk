@@ -28,19 +28,20 @@ INCLUDE    := -I../kernel/include
 CORE       := ../kernel/core/
 
 core_obj   :=	entry.o 	\
-		start.o 	\
-		print.o 	\
-		uart.o		\
-		pic.o 		\
-		intr.o		\
-		idt.o		\
-		excp.o		\
-		stack.o 	\
-		task.o		\
-		scheduler.o	\
-		syscall.o	\
-		seg_init.o	\
-		pag_init.o
+				start.o 	\
+				print.o 	\
+				uart.o		\
+				pic.o 		\
+				intr.o		\
+				idt.o		\
+				excp.o		\
+				stack.o 	\
+				task.o		\
+				switch_task.o	\
+				scheduler.o	\
+				syscall.o	\
+				seg_init.o	\
+				pag_init.o
 
 objects    := $(addprefix $(CORE), $(core_obj))
 

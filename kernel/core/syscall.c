@@ -2,6 +2,7 @@
 #include <segmem.h>
 #include <intr.h>
 #include <syscall.h>
+#include <task.h>
 
 void (*syscall[])(volatile uint32_t*) = {
 	print_counter_hdl
@@ -16,7 +17,7 @@ void syscall_hdl(int_ctx_t* ctx)
 	}
 }
 
-void print_counter(volatile uint32_t* counter)
+void __printer__ print_counter(volatile uint32_t* counter)
 {
 	asm volatile("int $0x80"::"a"(0x0),"b"(counter));
 }

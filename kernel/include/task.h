@@ -26,6 +26,7 @@ struct task_t
 void init_task(task_t* task, uint32_t code, 
 	uint32_t kstack, uint32_t ustack, task_t* next_task);
 void save_task(task_t* task, int_ctx_t* ctx);
-void restore_task(task_t* task);
+void __regparm__(1) restore_task(task_t* task);
+void __regparm__(1) switch_task(task_t* task);
 
 #endif
