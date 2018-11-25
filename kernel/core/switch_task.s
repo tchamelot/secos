@@ -3,8 +3,6 @@
 .type switch_task, "function"
 
 switch_task:
-	mov 0x3c(%eax),%ebx
-	mov %ebx,0x305f24			# Change TSS.s0.esp
 	mov 0x40(%eax),%ebx
 	mov %ebx,%cr3				# Change cr3
 	mov 0x3c(%eax),%esp			# Change kernel stack

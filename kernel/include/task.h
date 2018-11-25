@@ -3,7 +3,6 @@
 
 #include <string.h>
 #include <intr.h>
-#include <seg_init.h>
 
 #define __counter__  __attribute__((section(".countercode"),aligned(16)))
 #define __printer__  __attribute__((section(".printercode"),aligned(16)))
@@ -26,7 +25,7 @@ struct task_t
 void init_task(task_t* task, uint32_t code, 
 	uint32_t kstack, uint32_t ustack, task_t* next_task);
 void save_task(task_t* task, int_ctx_t* ctx);
-void __regparm__(1) restore_task(task_t* task);
+void restore_task(task_t* task);
 void __regparm__(1) switch_task(task_t* task);
 
 #endif

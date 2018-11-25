@@ -3,7 +3,6 @@
 #include <info.h>
 #include <asm.h>
 #include <task.h>
-#include <scheduler.h>
 #include <syscall.h>
 #include <seg_init.h>
 #include <pag_init.h>
@@ -17,20 +16,19 @@ task_t tasks[2];
 
 void __counter__ counter_task()
 {	
-	volatile uint32_t *counter = (uint32_t*)0xd00000;
+	uint32_t *counter = (uint32_t*)0xd00000;
 
 	*counter = 0;
 
 	while(1)
 	{
 		(*counter)++;
-		//debug("%xd\n", *counter);
 	}
 }
 
 void __printer__ printer_task()
 {
-	volatile uint32_t *counter = (uint32_t*)0xd00000;
+	uint32_t *counter = (uint32_t*)0xd00000;
 
 	while(1)
 	{
@@ -47,15 +45,15 @@ void tp()
 	force_interrupts_on();
 
 	debug("[+] Initing tasks\n");
-	init_task(&tasks[0], (uint32_t)&counter_task, 0x302000, 0x801000, &tasks[1]);
+	init_task(&tasks[0], (uint32_t)&counter_task, 0x802000, 0x801000, &tasks[1]);
 	init_page_task(&tasks[0], (uint32_t)&__counter_start__, (uint32_t)&__counter_end__);
 	
-	init_task(&tasks[1], (uint32_t)&printer_task, 0x301000, 0xc01000, &tasks[0]);
+	init_task(&tasks[1], (uint32_t)&printer_task, 0xc02000, 0xc01000, &tasks[0]);
 	init_page_task(&tasks[1], (uint32_t)&__printer_start__, (uint32_t)&__printer_end__);
 	
 	set_cr3(tasks[0].cr3);
 	enable_paging();
 
-	switch_task(&tasks[0]);
+	restore_task(&tasks[0]);
 	while(1);
 }

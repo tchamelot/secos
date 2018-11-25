@@ -78,7 +78,7 @@ void init_page_task(task_t* task, uint32_t task_start, uint32_t task_end)
 	map_address(pde, task_start, task_end, PG_USR|PG_RO);
 
 	// Map task stack
-	map_address(pde, task_start - 0x2000, task_start - 0x1000, PG_USR|PG_RW);
+	map_address(pde, task_start - 0x2000, task_start - 0x1fff, PG_USR|PG_RW);
 
 	// Map shared memory
 	map_address(pde, 0xd00000, 0xd00000 + 0x1000, PG_USR|PG_RW);
