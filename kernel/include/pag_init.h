@@ -11,6 +11,7 @@
 uint32_t new_page();
 void enable_paging();
 void map_address(pde32_t* pde, uint32_t begin, uint32_t end, uint8_t opt);
+void map_shared_memory(pde32_t* pgd, uint32_t addr_phys, uint32_t addr_virt, uint8_t opt);
 void init_page_task(task_t* task, uint32_t task_start, uint32_t task_end);
 uint8_t is_paging_enable();
 #endif

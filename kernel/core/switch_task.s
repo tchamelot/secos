@@ -2,6 +2,12 @@
 .global switch_task
 .type switch_task, "function"
 
+##
+# \fn			void switch_task(task_t* task)
+# \brief		Switch the context and resume the task.
+#
+# \param task	The task to resume. The argument must be passed through eax
+
 switch_task:
 	mov 0x40(%eax),%ebx
 	mov %ebx,%cr3				# Change cr3

@@ -5,10 +5,19 @@
 #include <syscall.h>
 #include <task.h>
 
+
+/**
+ * \var 			syscall
+ * \brief			syscall function pointer array
+ */
 void (*syscall[])(uint32_t*) = {
-	print_counter_hdl
+	sys_counter_hdl
 };
 
+/**
+ * \fn 				void syscall_hdl(int_ctx_t* ctx)
+ * \brief			Low level syscall handler
+ */
 void syscall_hdl(int_ctx_t* ctx)
 {
 	uint32_t nb_sys = ctx->gpr.eax.raw;
@@ -18,19 +27,38 @@ void syscall_hdl(int_ctx_t* ctx)
 	}
 }
 
-void __printer__ print_counter(uint32_t* counter)
+/**
+ * \fn				void sys_counter(uint32_t* counter)
+ * \brief			API for printing counter in userspace
+ *
+ * \param counter	Pointer to counter variable. 
+ */
+void __printer__ sys_counter(uint32_t* counter)
 {
 	asm volatile("int $0x80"::"a"(0x0),"b"(counter));
 }
 
-void print_counter_hdl(uint32_t* counter)
+/**
+ *	\fn				void sys_counter_hdl(uint32_t* counter)
+ *	\brief			High level syscall handler for printing counter
+ *
+ *	\param counter	Pointer to counter variable
+ */
+void sys_counter_hdl(uint32_t* counter)
 {	
+	// Check if the pointer is valid
 	if(check_arg_ptr(counter))
 		debug("Counter : %u\n", (*counter));
 	else
 		debug("[Syscall] Error bad pointer\n");
 }
 
+/**
+ * \fn			uint32_t check_arg_ptr(uint32_t* arg)
+ * \brief		Check if the arg is in user space and not kernel space
+ *
+ * \param arg	The pointer to check
+ */
 uint32_t check_arg_ptr(uint32_t* arg)
 {
 	uint32_t valid = 0;
